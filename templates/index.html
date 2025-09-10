@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Kavalan - Scam Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active { border-color: #3b82f6; color: #3b82f6; background-color: #eff6ff; }
+        #result-box { white-space: pre-wrap; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-2xl">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-600">Digital Kavalan</h1>
+            <p class="text-gray-500 mt-2">Your digital guardian against online scams. Paste a message or upload an image below to check for threats.</p>
+        </header>
+
+        <main class="bg-white p-6 rounded-2xl shadow-lg">
+            
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="-mb-px flex space-x-4" aria-label="Tabs">
+                    <button id="tab-check" class="whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm rounded-t-lg hover:bg-blue-50 focus:outline-none">
+                        Check Message
+                    </button>
+                    <button id="tab-report" class="whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-t-lg focus:outline-none">
+                        Report Scam
+                    </button>
+                    <button id="tab-dashboard" class="whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-t-lg focus:outline-none">
+                        Dashboard
+                    </button>
+                </nav>
+            </div>
+
+            <div>
+                <div id="pane-check">
+                    <p class="text-sm text-gray-600 mb-4">Enter the message you want to analyze. Our system will check it against our database and AI models.</p>
+                    <textarea id="message-input" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Paste suspicious message here..."></textarea>
+                    
+                    <div class="mt-4">
+                        <label for="image-input" class="text-sm font-medium text-gray-700">Or upload an image:</label>
+                        <input type="file" id="image-input" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-full file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-blue-50 file:text-blue-700
+                          hover:file:bg-blue-100
+                        "/>
+                    </div>
+
+                    <button id="check-btn" class="mt-4 w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 flex items-center justify-center">
+                        <svg id="spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span id="button-text">Analyze Message</span>
+                    </button>
+                </div>
+
+                <div id="pane-report" class="hidden">
+                    <p class="text-sm text-gray-600 mb-4">Help improve our system. If you've received a scam message, please submit it here. Your contribution helps protect others.</p>
+                    <textarea id="report-input" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" placeholder="Paste the full scam message..."></textarea>
+                    <button id="report-btn" class="mt-4 w-full bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-300">
+                        Submit Report
+                    </button>
+                </div>
+
+                <div id="pane-dashboard" class="hidden text-center">
+                    <p class="text-sm text-gray-600 mb-4">This is your personal safety dashboard for this device.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <p class="text-lg text-blue-800 font-medium">Total Items Checked</p>
+                            <p id="stats-checked" class="text-4xl font-bold text-blue-600">0</p>
+                        </div>
+                        <div class="bg-red-50 p-6 rounded-lg">
+                            <p class="text-lg text-red-800 font-medium">Scams Detected</p>
+                            <p id="stats-scams" class="text-4xl font-bold text-red-600">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div id="result-container" class="mt-6 pt-6 border-t border-gray-200 hidden">
+                 <h3 class="text-lg font-semibold mb-2 text-gray-700">Analysis Result:</h3>
+                 <div id="result-box" class="p-4 rounded-lg"></div>
+            </div>
+
+        </main>
+        
+        <footer class="text-center mt-8">
+            <p class="text-gray-400 text-sm">&copy; 2025 Digital Kavalan. Stay safe online.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const tabs = {
+                check: document.getElementById('tab-check'), report: document.getElementById('tab-report'), dashboard: document.getElementById('tab-dashboard'),
+            };
+            const panes = {
+                check: document.getElementById('pane-check'), report: document.getElementById('pane-report'), dashboard: document.getElementById('pane-dashboard'),
+            };
+            const checkBtn = document.getElementById('check-btn');
+            const reportBtn = document.getElementById('report-btn');
+            const messageInput = document.getElementById('message-input');
+            const reportInput = document.getElementById('report-input');
+            const imageInput = document.getElementById('image-input');
+            const resultContainer = document.getElementById('result-container');
+            const resultBox = document.getElementById('result-box');
+            const spinner = document.getElementById('spinner');
+            const buttonText = document.getElementById('button-text');
+
+            
+            let userId = localStorage.getItem('digital_kavalan_user_id');
+            if (!userId) {
+                userId = 'web_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+                localStorage.setItem('digital_kavalan_user_id', userId);
+            }
+
+            
+            function switchTab(activeTab) {
+                Object.values(tabs).forEach(tab => tab.classList.remove('tab-active', 'border-gray-300', 'border-transparent'));
+                Object.values(panes).forEach(pane => pane.classList.add('hidden'));
+                tabs[activeTab].classList.add('tab-active');
+                panes[activeTab].classList.remove('hidden');
+                if (activeTab === 'dashboard') fetchDashboard();
+            }
+            switchTab('check');
+            Object.keys(tabs).forEach(tabKey => tabs[tabKey].addEventListener('click', () => switchTab(tabKey)));
+
+           
+            const showLoading = (isLoading) => {
+                spinner.style.display = isLoading ? 'block' : 'none';
+                buttonText.textContent = isLoading ? 'Analyzing...' : 'Analyze Message';
+                checkBtn.disabled = isLoading;
+                checkBtn.classList.toggle('opacity-75', isLoading);
+                checkBtn.classList.toggle('cursor-not-allowed', isLoading);
+            };
+
+            const displayResult = (htmlContent, isError = false) => {
+                resultContainer.classList.remove('hidden');
+                resultBox.innerHTML = htmlContent;
+                const colorClasses = ['bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800', 'bg-red-100', 'text-red-800', 'bg-gray-100', 'text-gray-800'];
+                resultBox.classList.remove(...colorClasses);
+                if (isError) resultBox.classList.add('bg-red-100', 'text-red-800');
+                else if (htmlContent.includes('DANGEROUS')) resultBox.classList.add('bg-red-100', 'text-red-800');
+                else if (htmlContent.includes('SUSPICIOUS')) resultBox.classList.add('bg-yellow-100', 'text-yellow-800');
+                else if (htmlContent.includes('SAFE')) resultBox.classList.add('bg-green-100', 'text-green-800');
+                else resultBox.classList.add('bg-gray-100', 'text-gray-800');
+            };
+            
+            checkBtn.addEventListener('click', async () => {
+                const message = messageInput.value.trim();
+                const imageFile = imageInput.files[0];
+                if (!message && !imageFile) {
+                    displayResult('Please enter a message or upload an image to analyze.', true);
+                    return;
+                }
+                showLoading(true);
+                const formData = new FormData();
+                formData.append('user_id', userId);
+                if (message) formData.append('message', message);
+                if (imageFile) formData.append('image', imageFile);
+                try {
+                    const response = await fetch('/api/check', { method: 'POST', body: formData });
+                    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                    const data = await response.json();
+                    displayResult(data.result);
+                    fetchDashboard();
+                } catch (error) {
+                    console.error('Check API Error:', error);
+                    displayResult('An error occurred. Could not connect to the analysis service.', true);
+                } finally {
+                    showLoading(false);
+                    messageInput.value = '';
+                    imageInput.value = '';
+                }
+            });
+
+            
+            reportBtn.addEventListener('click', async () => {
+                const message = reportInput.value.trim();
+                if (!message) {
+                    resultContainer.classList.remove('hidden');
+                    displayResult('Please enter the scam message to report.', true);
+                    return;
+                }
+                reportBtn.textContent = 'Submitting...';
+                reportBtn.disabled = true;
+                try {
+                    const response = await fetch('/api/report', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message }),
+                    });
+                    if (!response.ok) throw new Error('Failed to submit report');
+                    const data = await response.json();
+                    reportInput.value = '';
+                    switchTab('check');
+                    displayResult(data.result);
+                } catch (error) {
+                    console.error('Report API Error:', error);
+                    switchTab('check');
+                    displayResult('Could not submit the report. Please try again later.', true);
+                } finally {
+                    reportBtn.textContent = 'Submit Report';
+                    reportBtn.disabled = false;
+                }
+            });
+            
+            
+            async function fetchDashboard() {
+                try {
+                    const response = await fetch(`/api/dashboard?user_id=${userId}`);
+                    if (!response.ok) throw new Error('Failed to fetch stats');
+                    const stats = await response.json();
+                    document.getElementById('stats-checked').textContent = stats.checked;
+                    document.getElementById('stats-scams').textContent = stats.scams_found;
+                } catch(error) {
+                    console.error('Dashboard API Error:', error);
+                    document.getElementById('stats-checked').textContent = 'N/A';
+                    document.getElementById('stats-scams').textContent = 'N/A';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
