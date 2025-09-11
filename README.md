@@ -156,8 +156,4 @@ https://your-ngrok-url.ngrok-free.app/webhook
 
 Save the configuration. You can now send messages to your Twilio number on WhatsApp to interact with the bot.
 
----
 
-## 📜 License
-
-Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
